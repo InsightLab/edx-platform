@@ -24,6 +24,8 @@ from openedx.features.content_type_gating.helpers import FULL_ACCESS, LIMITED_AC
 from student.models import CourseEnrollment
 from xmodule.partitions.partitions import ENROLLMENT_TRACK_PARTITION_ID
 
+from .permissions import CONTENT_TYPE_GATING_BYPASS_FBE
+
 
 @python_2_unicode_compatible
 class ContentTypeGatingConfig(StackedConfigurationModel):
@@ -65,7 +67,7 @@ class ContentTypeGatingConfig(StackedConfigurationModel):
         """
         if student_masquerade:
             # If a request is masquerading as a specific user, the user variable will represent the correct user.
-            if user and user.id and user.has_perm('feature_based_enrollments.bypass_fbe', course_key):
+            if user and user.id and user.has_perm(CONTENT_TYPE_GATING_BYPASS_FBE, course_key):
                 return True
         elif user_partition:
             # If the current user is masquerading as a generic student in a specific group,
@@ -129,7 +131,7 @@ class ContentTypeGatingConfig(StackedConfigurationModel):
                                                       user_partition):
                 return False
         # When a request is not in a masquerade state the user variable represents the correct user.
-        elif user and user.id and user.has_perm('feature_based_enrollments.bypass_fbe', course_key):
+        elif user and user.id and user.has_perm(CONTENT_TYPE_GATING_BYPASS_FBE, course_key):
             return False
 
         # check if user is in holdback
