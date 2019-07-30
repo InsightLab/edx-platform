@@ -14,7 +14,8 @@ CMS_BASE = 'localhost:18010'
 LMS_ROOT_URL = 'http://{}'.format(LMS_BASE)
 
 FEATURES.update({
-    'ENABLE_COURSEWARE_INDEX': False,
+    'ENABLE_COURSEWARE_INDEX': True,
+    'ENABLE_COURSE_DISCOVERY': True,
     'ENABLE_LIBRARY_INDEX': False,
     'ENABLE_DISCUSSION_SERVICE': True,
 })
