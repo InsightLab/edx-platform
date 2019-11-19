@@ -41,46 +41,15 @@ from openedx.features.portfolio_project import INCLUDE_PORTFOLIO_UPSELL_MODAL
             props={}
         )}
     % endif
-
-    <header class="page-header has-secondary">
-        <div class="page-header-main">
-            <nav aria-label="${_('Course Outline')}" class="sr-is-focusable" tabindex="-1">
-                <h2 class="hd hd-3 page-title">${course.display_name_with_default}</h2>
-            </nav>
-        </div>
-        <div class="page-header-secondary">
-            % if settings.FEATURES.get('ENABLE_COURSEWARE_SEARCH'):
-                <div class="page-header-search">
-                    <form class="search-form input-group" role="search" action="${reverse('openedx.course_search.course_search_results', args=[course_key])}">
-                        <label class="field-label sr-only" for="search" id="search-hint">${_('Search the course')}</label>
-                        <input
-                                class="field-input input-text search-input form-control"
-                                type="search"
-                                name="query"
-                                id="search"
-                                placeholder="${_('Search the course')}"
-                        />
-                        <span class="input-group-btn">
-                            <button class="btn btn-outline-primary search-button" type="submit">${_('Search')}</button>
-                        </span>
-                    </form>
-                </div>
-            % endif
-            <div class="form-actions">
-                % if resume_course_url:
-                    <a class="btn btn-primary action-resume-course" href="${resume_course_url}">
-                        % if has_visited_course:
-                            <span data-action-type="resume">${_("Resume Course")}</span>
-                        % else:
-                            <span data-action-type="start">${_("Start Course")}</span>
-                        % endif
-                    </a>
-                % endif
-            </div>
-        </div>
-    </header>
     <div class="page-content">
         <div class="page-content-main">
+            <header class="page-header has-secondary">
+                <div class="page-header-main">
+                    <nav aria-label="${_('Course Outline')}" class="sr-is-focusable" tabindex="-1">
+                        <h2 class="hd hd-3 page-title">${course.display_name_with_default}</h2>
+                    </nav>
+                </div>
+            </header>
             % if course_expiration_fragment:
                 ${HTML(course_expiration_fragment.content)}
             % endif
@@ -99,6 +68,40 @@ from openedx.features.portfolio_project import INCLUDE_PORTFOLIO_UPSELL_MODAL
             % endif
         </div>
         <aside class="page-content-secondary course-sidebar">
+            % if settings.FEATURES.get('ENABLE_COURSEWARE_SEARCH'):
+                <div class="section section-search-start">
+                    <div class="page-header-search search-bar">
+                        <form class="search-form input-group" role="search" action="${reverse('openedx.course_search.course_search_results', args=[course_key])}">
+                            <div class="search-field-wrapper">
+                                <label class="field-label sr-only" for="search" id="search-hint">${_('Search the course')}</label>
+                                <input
+                                    class="field-input input-text search-input form-control"
+                                    type="search"
+                                    name="query"
+                                    id="search"
+                                    placeholder="${_('Search the course')}"
+                                />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-outline-primary search-button" type="submit">
+                                        <span class="icon fa fa-search" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-actions">
+                        % if resume_course_url:
+                            <a class="btn btn-primary action-resume-course mt-3 btn-small" href="${resume_course_url}">
+                                % if has_visited_course:
+                                    <span data-action-type="resume">${_("Resume Course")}</span>
+                                % else:
+                                    <span data-action-type="start">${_("Start Course")}</span>
+                                % endif
+                            </a>
+                        % endif
+                    </div>
+                </div>
+            % endif
             % if has_goal_permission:
                 <div class="section section-goals ${'' if current_goal else 'hidden'}">
                     <div class="current-goal-container">
@@ -124,6 +127,11 @@ from openedx.features.portfolio_project import INCLUDE_PORTFOLIO_UPSELL_MODAL
                     </div>
                 </div>
             % endif
+            % if dates_fragment:
+                <div class="section section-dates">
+                    ${HTML(dates_fragment.body_html())}
+                </div>
+            % endif
             % if course_tools:
                 <div class="section section-tools">
                     <h3 class="hd-6 section-title">${_("Course Tools")}</h3>
@@ -131,7 +139,7 @@ from openedx.features.portfolio_project import INCLUDE_PORTFOLIO_UPSELL_MODAL
                         % for course_tool in course_tools:
                             <li class="course-tool">
                                 <a class="course-tool-link" data-analytics-id="${course_tool.analytics_id()}" href="${course_tool.url(course_key)}">
-                                    <span class="icon ${course_tool.icon_classes()}" aria-hidden="true"></span>
+                                    <span class="icon ${course_tool.icon_classes() if course_tool.title().strip() != 'Bookmarks' else 'fa fa-star'}" aria-hidden="true"></span>
                                     ${course_tool.title()}
                                 </a>
                             </li>
@@ -154,11 +162,6 @@ from openedx.features.portfolio_project import INCLUDE_PORTFOLIO_UPSELL_MODAL
                             </p>
                     <p><button class="btn-link btn-small promo-learn-more">${_('Learn More')}</button></p>
                         </div>
-                </div>
-            % endif
-            % if dates_fragment:
-                <div class="section section-dates">
-                    ${HTML(dates_fragment.body_html())}
                 </div>
             % endif
             % if handouts_html:

@@ -40,7 +40,7 @@
 
     <div class="bookmarks-empty">
         <h3 class="hd-4 bookmarks-empty-header">
-            <span class="icon fa fa-bookmark-o bookmarks-empty-header-icon" aria-hidden="true"></span>
+            <span class="icon fa fa-star-o bookmarks-empty-header-icon" aria-hidden="true"></span>
             <%- gettext("You have not bookmarked any courseware pages yet") %>
             <br>
         </h3>
